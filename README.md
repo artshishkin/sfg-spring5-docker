@@ -19,3 +19,7 @@ sudo docker run hello-world
 - $`sudo docker stop 8942c385b18c` - then from any terminal to stop running
 - $`docker ps` - then no one running (`ps` - List containers)
 - $`sudo docker run -p 27017:27017 -d mongo` (Ports   0.0.0.0:27017->27017/tcp) - to connect external app to db
+
+### `260` Assignment - Download and Run Spring Boot Project
+- `sudo docker logs 84ec26572063`
+- `mvn spring-boot:run`
