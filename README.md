@@ -34,3 +34,11 @@ sudo docker run hello-world
 - `sudo docker images -q --no-trunc` - IDs of Images Full (SHA256 of image)
 - `sudo docker images` - REPOSITORY-TAG-IMAGE ID(12 characters of sha256)-CREATED-SIZE
 - Image Tag Names: format: [REGISTRYHOST/][USERNAME/]NAME[:TAG] (registry.hub.docker.com/mongo:latest) 
+
+### `265` Assigning storage (enables to store data between start-stop mongo container)
+- `sudo docker run -p 27017:27017 -v /home/art/dockerdata/mongo:/data/db -d mongo` 
+Usefull command:
+- `history | grep mongo`
+- `!252` - for example - to repeat command
+
+
