@@ -28,3 +28,9 @@ sudo docker run hello-world
 - `screen spring-boot:run`
 - Ctrl-A -> D - to detach
 - `screen -r` - to attach
+
+### `262` Docker Images
+- `sudo docker image inspect mongo`
+- `sudo docker images -q --no-trunc` - IDs of Images Full (SHA256 of image)
+- `sudo docker images` - REPOSITORY-TAG-IMAGE ID(12 characters of sha256)-CREATED-SIZE
+- Image Tag Names: format: [REGISTRYHOST/][USERNAME/]NAME[:TAG] (registry.hub.docker.com/mongo:latest) 
