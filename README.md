@@ -23,3 +23,8 @@ sudo docker run hello-world
 ### `260` Assignment - Download and Run Spring Boot Project
 - `sudo docker logs 84ec26572063`
 - `mvn spring-boot:run`
+
+### Detach Spring Boot app
+- `screen spring-boot:run`
+- Ctrl-A -> D - to detach
+- `screen -r` - to attach
