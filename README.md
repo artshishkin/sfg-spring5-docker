@@ -41,4 +41,7 @@ Usefull command:
 - `history | grep mongo`
 - `!252` - for example - to repeat command
 
+### `266` Run Rabbit MQ Container - Assignment
+- `sudo docker run -p 4369:4369 -p 5671:5671 -p 5672:5672 -p 25672:25672 -d --hostname art-rabbit --name artRabbit rabbitmq:3` - without managment console
+- `sudo docker run -d --hostname art-rabbit --name rabbitMan2 -p 8080:15672 -p 5671:5671 -p 5672:5672 rabbitmq:3-management` - with management console on 8080 
 
