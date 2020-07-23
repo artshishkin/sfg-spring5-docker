@@ -50,5 +50,16 @@ Usefull command:
 - `sudo docker run --name art-mysql -v /home/art/dockerdata/mysql:/var/lib/mysql -p 3306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d mysql` - without tag - will use `latest`
 
 ### `270` Docker House Keeping
+#### Containers:
 - `docker kill $(docker ps -q)` - Kill all Running Docker Containers (`sudo docker kill $(sudo docker ps -q)`)
 - `docker rm $(docker ps -a -q)` - Delete all Stopped Docker Containers (`-q` - quet mode)
+#### Images:
+- `docker rmi <image name>` - remove docker image (`docker rmi a9ea0b189b4f`)
+- `docker images` - show all images
+- `docker images -q` - show TAGS of all images
+- `docker rmi $(docker images -q -f dangling=true)` - delete Untagged (dangling) images
+- `docker rmi $(docker images -q)` - delete all images
+#### Volumes:
+- `docker volume rm $(docker volume ls -f dangling=true -q)` - remove all dangling volumes
+
+
