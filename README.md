@@ -84,3 +84,11 @@ sudo usermod -aG docker ${USER}
 - `ps -ef` - processes
 - `yum install java`
 
+### `277` Running Spring Boot from Docker
+- in `/tmp` create Dockerfile
+- copy jar to `/tmp`
+- from `/tmp` run `docker build -t spring-boot-docker .` (`-t` - tag image as `spring-boot-docker`, `.` - look in a local directory for Dockerfile)
+- I moved to `/tmp/run_boot` and changed Dockerfile
+- `docker run -d -p 8080:8080 spring-boot-docker`
+- `docker ps`
+- `docker logs ...`
