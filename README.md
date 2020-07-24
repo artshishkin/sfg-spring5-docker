@@ -62,4 +62,15 @@ Usefull command:
 #### Volumes:
 - `docker volume rm $(docker volume ls -f dangling=true -q)` - remove all dangling volumes
 
-
+### Running docker through ssh without sudo
+- [Manage Docker as a non-root user](https://docs.docker.com/engine/install/linux-postinstall/)
+To create the docker group and add your user:
+- Create the docker group.
+```
+sudo groupadd docker
+```
+- Add your user to the docker group.
+```
+sudo usermod -aG docker ${USER}
+```
+- You would need to loog out and log back in so that your group membership is re-evaluated
