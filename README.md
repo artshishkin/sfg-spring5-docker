@@ -74,3 +74,13 @@ sudo groupadd docker
 sudo usermod -aG docker ${USER}
 ```
 - You would need to loog out and log back in so that your group membership is re-evaluated
+
+# Section 15 - Running Spring Boot in a CentOS Image
+### `274` Preparing CentOS for Java development
+- `docker run -d centos` -  executes and exits
+- `docker run -d centos tail -f /dev/null` - some tricky workaround
+- `docker  exec -it hopeful_shtern bash` (it - interactive mode, hopeful_shtern - container name (in this time))
+- `whoami`
+- `ps -ef` - processes
+- `yum install java`
+
