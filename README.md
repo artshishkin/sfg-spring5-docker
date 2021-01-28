@@ -108,5 +108,10 @@ sudo usermod -aG docker ${USER}
 
 ### `42` Spring Boot Application Code Review
 
-
+### Tasks
+1.  Adding Fabric8 Maven Plugin (43)
+2.  Enabling connect to remote docker daemon
+    -  `https://nickjanetakis.com/blog/docker-tip-73-connecting-to-a-remote-docker-daemon`
+3.  Creating Docker Image in Fabric 8 (44) 
+    -  `mvn clean package docker:build`
 
