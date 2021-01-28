@@ -127,3 +127,10 @@ sudo usermod -aG docker ${USER}
 ```
     -  run `mvn clean package docker:build docker:push`
 
+##  Section 6 - Running Images from Maven
+
+### `52` Running a Docker image from Maven
+
+    -  `mvn docker:run` - interactively
+    -  `mvn docker:start` - detached (like `-d`)
+    -  `mvn docker:stop` - stop
