@@ -103,3 +103,10 @@ sudo usermod -aG docker ${USER}
 - `docker run -d -p 8080:8080 spring-boot-docker`
 - `docker ps`
 - `docker logs ...`
+
+## Section 5 - DevOps - Automating Building of Docker Images
+
+### `42` Spring Boot Application Code Review
+
+
+
