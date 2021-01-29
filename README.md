@@ -189,4 +189,32 @@ sudo usermod -aG docker ${USER}
     -  click 1 page `http://localhost:8080/product/1`
     -  view logs in 2 projects
         -  Send and Received messages must be equal
-    -  mysql data should update correctly       
+    -  mysql data should update correctly
+
+### `55` Running Example Application with Docker
+
+1.  Start containers using command in `dockercommands.sh`
+    -  `docker run --name mysqldb -p 3307:3306 -e MYSQL_DATABASE=pageviewservice -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d mysql:5.7`
+    -  `docker run --name rabbitmq -p 5671:5671 -p 5672:5672 -d rabbitmq`
+2.  Start `pageviewservice` docker container
+3.  Start `sfg-spring5-docker` -> Test it
+4.  Got errors in `pageviewservice` with hibernate
+5.  Rebuild docker image `springframeworkguru/pageviewservice`
+    -  modify DockerfileTemplate: `FROM openjdk:11-jdk`
+    -  <maven-surefire-plugin.version>3.0.0-M1</maven-surefire-plugin.version>
+    -  <dockerHost>tcp://127.0.0.1:2375</dockerHost>  
+    -  update version `io.fabric8:docker-maven-plugin:0.33.0`  
+    -  update version of `maven-javadoc-plugin` to 3.2.0
+    -  exclude maven-gpg-plugin by moving execution to another phase
+        -  <!--<phase>verify</phase>-->
+        -  <phase>deploy</phase>
+    -  build Docker image:
+        -  `mvn clean package docker:build`
+6.  Start `pageviewservice` docker container
+7.  Start `sfg-spring5-docker` -> Test it ->All OK
+        
+        
+        
+        
+        
+                     
