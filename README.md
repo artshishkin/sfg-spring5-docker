@@ -213,8 +213,11 @@ sudo usermod -aG docker ${USER}
 6.  Start `pageviewservice` docker container
 7.  Start `sfg-spring5-docker` -> Test it ->All OK
         
+###  `56` Running Docker Containers via Maven        
         
-        
-        
+-  `mvn clean package docker:start` - just start        
+-  `mvn clean package docker:build docker:start` - build and start         
+-  `mvn clean package docker:stop docker:build docker:start` - stop first 
+-  `mvn docker:run` - interactively (with logs)      
         
                      
