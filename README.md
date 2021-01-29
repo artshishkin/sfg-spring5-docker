@@ -134,3 +134,59 @@ sudo usermod -aG docker ${USER}
     -  `mvn docker:run` - interactively
     -  `mvn docker:start` - detached (like `-d`)
     -  `mvn docker:stop` - stop
+
+### `54` Application Code Review
+
+1.  Clone repositories
+    -  `git clone https://github.com/springframeworkguru/page-view-service-model.git`
+    -  `git clone https://github.com/springframeworkguru/page-view-service.git`
+    -  `git clone https://github.com/springframeworkguru/page-view-client.git`
+2.  Create Empty project
+    -  Add 4 modules (3 cloned and 1 `sfg-spring5-docker` from study course):
+    -  File -> New -> Module from Existing Source
+3.  Update `page-view-service-model`
+    -  add dependencies to run in JVM11        
+        -  `jakarta.xml.bind:jakarta.xml.bind-api:2.3.3`
+        -  `com.sun.xml.bind:jaxb-impl:2.3.3<scope>runtime</scope>`
+    -  version `1.4-SNAPSHOT`
+    -  add properties
+        -  <maven.compiler.source>${java.version}</maven.compiler.source>
+        -  <maven.compiler.target>${java.version}</maven.compiler.target>        
+    -  update version of `maven-javadoc-plugin` to 3.2.0
+    -  exclude maven-gpg-plugin by moving execution to another phase
+        -  <!--<phase>verify</phase>-->
+        -  <phase>deploy</phase>            
+    -  install module into local Maven repository
+        -  `mvn clean package install`              
+4.  Update `page-view-service`
+    -  application.properties - use 3307
+        -  `spring.datasource.url=jdbc:mysql://localhost:3307/pageviewservice?useSSL=false`
+    -  add dependencies to run in JVM11        
+        -  `jakarta.xml.bind:jakarta.xml.bind-api:2.3.3`
+        -  `com.sun.xml.bind:jaxb-impl:2.3.3<scope>runtime</scope>`
+        -  `org.javassist:javassist:3.25.0-GA` - for Hibernate
+    -  modify version of `page-view-service-model` to `1.4-SNAPSHOT`
+5.  Update `page-view-client`
+    -  add dependencies to run in JVM11        
+        -  `jakarta.xml.bind:jakarta.xml.bind-api:2.3.3`
+        -  `com.sun.xml.bind:jaxb-impl:2.3.3<scope>runtime</scope>`
+    -  modify version of `page-view-service-model` to `1.4-SNAPSHOT`
+    -  update version of `maven-javadoc-plugin` to 3.2.0
+    -  exclude maven-gpg-plugin by moving execution to another phase
+        -  <!--<phase>verify</phase>-->
+        -  <phase>deploy</phase>     
+    -  install module into local Maven repository
+        -  `mvn clean package install`
+6.  Modify `sfg-spring5-docker` to use Page View Client version `0.0.3-SNAPSHOT` 
+7.  Using `dockercommands.sh` start required containers
+    -  `docker run --name mysqldb -p 3307:3306 -e MYSQL_DATABASE=pageviewservice -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d mysql`
+    -  port 3307 because I have MySQL installed
+    -  `docker run --name rabbitmq -p 5671:5671 -p 5672:5672 -d rabbitmq`
+8.  Run `page-view-service`
+9.  Run `sfg-spring5-docker`     
+10.  Test it
+    -  browse to `http://localhost:8080`
+    -  click 1 page `http://localhost:8080/product/1`
+    -  view logs in 2 projects
+        -  Send and Received messages must be equal
+    -  mysql data should update correctly       
