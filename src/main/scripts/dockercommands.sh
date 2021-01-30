@@ -17,3 +17,7 @@ docker run --name pageviewservice -p 8081:8081 -d \
 -e SPRING_PROFILES_ACTIVE=mysql  \
 -e SPRING_RABBITMQ_HOST=rabbitmq \
 springframeworkguru/pageviewservice
+
+# Using Maven for CI Builds
+mvn clean verify docker:push
+

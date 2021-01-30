@@ -220,4 +220,8 @@ sudo usermod -aG docker ${USER}
 -  `mvn clean package docker:stop docker:build docker:start` - stop first 
 -  `mvn docker:run` - interactively (with logs)      
         
+###  `58` Using Maven for CI Builds
+
+-  `mvn clean package verify docker:push`
+-  `mvn clean verify docker:push` - even simpler
                      
