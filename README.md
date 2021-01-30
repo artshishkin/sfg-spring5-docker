@@ -224,4 +224,20 @@ sudo usermod -aG docker ${USER}
 
 -  `mvn clean package verify docker:push`
 -  `mvn clean verify docker:push` - even simpler
+
+### View logs from Maven
+
+```shell script
+# Logs from all containers
+mvn docker:logs -Ddocker.follow
+## Logs from certain container by image tag
+mvn docker:logs -Ddocker.follow -Ddocker.filter=artarkatesoft/springbootdocker
+## Logs from certain container by container name
+mvn docker:logs -Ddocker.follow -Ddocker.filter=spring-boot-docker
+## Logs from several containers
+mvn docker:logs -Ddocker.follow -Ddocker.filter=spring-boot-docker,myrabbitmq
+mvn docker:logs -Ddocker.follow -Ddocker.filter=spring-boot-docker,springframeworkguru/pageviewservice
+```
+
+
                      
