@@ -34,14 +34,7 @@ services:
       interval: 1m30s
       timeout: 10s
       retries: 3
-  spring-boot-docker:
-    image: artarkatesoft/springbootdocker
-    ports:
-      - '8080:8080'
-    environment:
-      SPRING_RABBITMQ_HOST: myrabbitmq
-    depends_on:
-      - myrabbitmq
+
 
 
 
