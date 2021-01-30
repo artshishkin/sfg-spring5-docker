@@ -9,11 +9,17 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 30s
       timeout: 20s
       retries: 10
 
   myrabbitmq:
     image: rabbitmq
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
 
   pageviewservice:
     image: springframeworkguru/pageviewservice
@@ -38,7 +44,8 @@ services:
     environment:
       SPRING_RABBITMQ_HOST: myrabbitmq
     depends_on:
-      - myrabbitmq
+      myrabbitmq:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
       interval: 30s
