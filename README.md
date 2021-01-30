@@ -239,5 +239,10 @@ mvn docker:logs -Ddocker.follow -Ddocker.filter=spring-boot-docker,myrabbitmq
 mvn docker:logs -Ddocker.follow -Ddocker.filter=spring-boot-docker,springframeworkguru/pageviewservice
 ```
 
+###  65. Run Wordpress with Docker Compose
+
+[Quickstart: Compose and WordPress](https://docs.docker.com/compose/wordpress/)
+-  `docker-compose up -d`
+-  `docker-compose down`
 
                      
