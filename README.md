@@ -306,7 +306,7 @@ portainer/portainer \
 
 1.  One opportunity [play-with-docker](https://labs.play-with-docker.com/)
 2.  Digital Ocean
-    -  Create Droplets -> Distributions -> CentOS
+    -  Create Droplets -> Distributions -> CentOS **CHOOSE v7** (with 8 were problems)
     -  Authentication
         -  Password
         -  SSH keys -> New SSH Key
@@ -325,10 +325,22 @@ portainer/portainer \
     -  Enter passphrase for key 'C:\Users\Admin/\.ssh\digital_ocean_centos': {enter passphrase} -> OK
     -  `whoami` -> root           
             
-    
+### `76` Assignment - Install Docker on Swarm Servers
 
-
-   
+1. Use [https://get.docker.com/](https://get.docker.com/)
+    -  `curl -fsSL https://get.docker.com -o get-docker.sh`
+    -  `sh get-docker.sh`    
+    -  **OR**
+2.  [How To Install and Use Docker on CentOS 7](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-centos-7)
+    -  `yum check-update`
+    -  `curl -fsSL https://get.docker.com/ | sh`
+    -  `systemctl start docker`
+    -  `systemctl status docker` - verify docker is **running**
+    -  `systemctl enable docker` - make it to start at every server reboot
+3.  Create UserData
+    -  to speed up installation create `UserData.sh` file
+    -  Create Droplet -> CentOS 7.6
+    -  Select additional options -> UserData -> paste it from `UserData.sh`     
 
 
                      
