@@ -427,4 +427,52 @@ All ports are BLOCKED except 22 (SSH), 2375 (Docker) and 2376 (Docker).
         -  Manage -> Networking ->
         -  VPC -> Create VPC Network
     -  repeat all the steps from 1 with custom VPC Network       
-            
+
+###  `79` Assignment - Install Portainer
+
+1.  Create Swarm manager
+    -  use UserData.sh
+    -  add `docker swarm init --advertise-addr eth1:2377` to use Private network
+    -  add service `portainer`
+    -  look final `UserDataNode1.sh`
+    -  ssh to it
+    -  `ssh -i ~\.ssh\digital_ocean root@64.227.113.177`
+    -  `docker swarm join --token SWMTKN-1-2lfo9ka1l9u68dlqyf6pq07iqtcdnfy8z1c9wnr2ld6r6wmq2q-5zkpsy1tllxxg1poymekfrd0e 10.114.16.2:2377`              
+2.  View portainer status
+    -  `http://64.227.113.177:9000` 
+3.  Create 4 Swarm workers
+    -  add join-token to UserData
+    -  demote 2 nodes to worker
+4.  Experiment `Leader down`
+    -  Application -> Resources -> node1 -> Off
+    -  browse to another manager
+    -  `http://104.248.132.96:9000/`
+    -  view Dashboard -> Services -> portainer -> moved from node1 to node6
+    -  node6 -> Off
+    -  browse to last manager -> node7
+    -  `http://159.65.116.203:9000/` -> 404
+    -  ssh to 159.65.116.203
+    -  `docker node ls`
+        -  Error response from daemon: rpc error: code = Unknown desc = The swarm does not have a leader. It's possible that too few managers are online. Make sure more than half of the managers are online.  
+        -  NO QUORUM (must be more then 50 % of running managers)
+    -  node1 UP
+    -  node7 -> `docker node ls` -> 
+        -  node1 Reachable, node7 Leader, node6 Unreachable
+    -  `http://159.65.116.203:9000/` -> OK
+5.  Experiment `Managers are killed`
+    -  node1 -> Destroy
+    -  node6 -> Destroy
+    -  `http://159.65.116.203:9000/` -> 404
+    -  node7 -> `docker node ls`
+        -  Error response from daemon: rpc error: code = Unknown desc = The swarm does not have a leader. It's possible that too few managers are online. Make sure more than half of the managers are online.
+    -  reinitialize swarm cluster
+    -  `docker swarm init --force-new-cluster --advertise-addr eth1:2377`
+    -  `docker node ls`
+        -  HOSTNAME   STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+        -  node1      Down      Active                          20.10.2
+        -  node6      Down      Active                          20.10.2
+        -  node7      Ready     Active         Leader           20.10.2
+        -  node8      Ready     Active                          20.10.2
+        -  node9      Ready     Active                          20.10.2
+    -  `docker service ls` - portainer OK
+    -  `docker node promote node8 node9`  
