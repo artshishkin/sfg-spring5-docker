@@ -279,8 +279,28 @@ mvn docker:logs -Ddocker.follow -Ddocker.filter=spring-boot-docker,springframewo
 5.  Clean UP
     -  `docker stack rm portainer`    
 
+###  Trying older version of portainer
 
+-  Start portainer
 
+```shell script
+## Create portainer service in docker swarm
+docker service create \
+--name portainer \
+--publish 9000:9000 \
+--constraint 'node.role == manager' \
+--mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+portainer/portainer \
+-H unix:///var/run/docker.sock
+```
+-  Set up `portainer`
+    -  browse to `http://art:9000`
+    -  set password
+-  Deploy Wordpress stack
+    -  Stacks -> Add stack
+    -  Name: `art-wordpress`
+    -  Web editor -> Insert `wordpress/docker-compose.yml` content
+    -  Deploy the stack
 
 
 
