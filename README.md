@@ -414,6 +414,17 @@ All ports are BLOCKED except 22 (SSH), 2375 (Docker) and 2376 (Docker).
   https://docs.docker.com/compose/install/#install-compose
 ```
 
+### Using Private VPC network in Docker Swarm Mode
 
-       
+1.  Use Default private VPC network
+    -  create CentOS droplet with UserData    
+    -  `docker swarm init --advertise-addr eth1:2377`
+        -  `docker swarm join --token SWMTKN-1-2nmjcgvhxe2k0ys8u28ck0k5ntu3d0tywkm7f74q4berj8oyh3-b4c7ehbjo7jcpcm6dqyvcnpxw 10.114.0.2:2377`
+    -  create another CentOS droplet with UserData and join-token
+    -  works well
+2.  Use Custom private VPC
+    -  create 
+        -  Manage -> Networking ->
+        -  VPC -> Create VPC Network
+    -  repeat all the steps from 1 with custom VPC Network       
             
