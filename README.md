@@ -379,3 +379,41 @@ portainer/portainer \
     -  node3 -> `docker node ls`
         -  Leader changed
         -  after rebooting node1 became Reachable
+        
+### `78` Creating a Multi Node Docker Swarm (using Docker Droplet image)
+
+1.  Create new project        
+    -  `Testing Docker Droplet`
+2.  Create 1 Droplet from Docker
+    -  Marketplace application -> Docker
+3.  Init Swarm mode
+    -  `ssh -i ~\.ssh\digital_ocean root@64.227.113.177`
+    -  `docker swarm init --advertise-addr 64.227.113.177`
+        -  `docker swarm join --token SWMTKN-1-4j2l94oevk7ed6992xrem416t2dsahlhhifm0jwycszw9z04i8-derdscf6rced0o3ickr2y7rja 64.227.113.177:2377`
+4.  Add 4 Worker Nodes
+    -  4 Docker Droplets
+    -  UserData -> just
+        -  `#!/bin/bash`
+        -  `docker swarm join --token SWMTKN-1-4j2l94oevk7ed6992xrem416t2dsahlhhifm0jwycszw9z04i8-derdscf6rced0o3ickr2y7rja 64.227.113.177:2377`
+    -  Tested -> Does not work properly
+    -  port 2377 is not opened by default
+```
+Welcome to DigitalOcean's 1-Click Docker Droplet.
+To keep this Droplet secure, the UFW firewall is enabled.
+All ports are BLOCKED except 22 (SSH), 2375 (Docker) and 2376 (Docker).
+
+* The Docker 1-Click Quickstart guide is available at:
+  https://do.co/3j6j3po#start
+
+* You can SSH to this Droplet in a terminal as root: ssh root@139.59.151.124
+
+* Docker is installed and configured per Docker's recommendations:
+  https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
+* Docker Compose is installed and configured per Docker's recommendations:
+  https://docs.docker.com/compose/install/#install-compose
+```
+
+
+       
+            
