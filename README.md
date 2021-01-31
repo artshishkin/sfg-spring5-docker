@@ -342,5 +342,40 @@ portainer/portainer \
     -  Create Droplet -> CentOS 7.6
     -  Select additional options -> UserData -> paste it from `UserData.sh`     
 
+### `78` Creating a Multi Node Docker Swarm (using CentOS Droplet)
 
-                     
+1.  Swarm init
+    -  SSH to node 1: `ssh -i ~\.ssh\digital_ocean_centos root@159.89.11.219`
+    -  `docker swarm init`
+    -  Error occurred
+    -  `Error response from daemon: could not choose an IP address to advertise since this system has multiple addresses on interface eth0 (46.101.192.228 and 10.19.0.5) - specify one with --advertise-addr`
+    -  Choose public IP
+    -  `docker swarm init --advertise-addr 46.101.192.228`
+2.  Get join-token for another managers
+    -  `docker swarm join-token manager`
+    -  `docker swarm join --token SWMTKN-1-1i94vhswzcyz142qevb0pcqxs9pnxrysoscqyivsy2vk6q6p9v-9sgwiawgsf4hvgr4x1j6208sg 46.101.192.228:2377`                  
+3.  Get join-token for workers
+    -  `docker swarm join-token worker`
+    -  `docker swarm join --token SWMTKN-1-1i94vhswzcyz142qevb0pcqxs9pnxrysoscqyivsy2vk6q6p9v-d4twjvj9k0cssiaiprqmesdxu 46.101.192.228:2377`                  
+4.  Create 2 more managers
+    -  add to UserData join-token execution
+5.  Create 2 more workers
+    -  add to UserData join-token execution        
+    -  **OR**
+6.  Just Create 4 Workers and Promote 2 of them into Manager
+    -  create 1 manager
+    -  `docker swarm init --advertise-addr 167.71.57.26`
+        -  `docker swarm join --token SWMTKN-1-1cz8pjq0j8pgn655f1hqm4z29nx6vc29b5fs46xbzto8shkc7n-a9ea1d3v5ywsqak3spv7bc5br 167.71.57.26:2377`
+    -  start 4 workers with UserData and join-token for connecting to Swarm as workers
+    -  node1 - `docker node ls`
+    -  when worker nodes become available promote 2 of them
+    -  `docker node promote node2 node3`           
+7.  Experiment `kill Leader`
+    -  `ps -ef | grep docker`
+        -  root      1455     1  0 17:45 ?        00:00:09 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+        -  root      2285  1607  0 18:13 pts/0    00:00:00 grep --color=auto docker`    
+    -  `kill -9 1455`
+    -  `reboot -f`
+    -  node3 -> `docker node ls`
+        -  Leader changed
+        -  after rebooting node1 became Reachable
