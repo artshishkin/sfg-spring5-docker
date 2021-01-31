@@ -239,10 +239,49 @@ mvn docker:logs -Ddocker.follow -Ddocker.filter=spring-boot-docker,myrabbitmq
 mvn docker:logs -Ddocker.follow -Ddocker.filter=spring-boot-docker,springframeworkguru/pageviewservice
 ```
 
-###  65. Run Wordpress with Docker Compose
+###  `65` Run Wordpress with Docker Compose
 
 [Quickstart: Compose and WordPress](https://docs.docker.com/compose/wordpress/)
 -  `docker-compose up -d`
 -  `docker-compose down`
+
+## Section 8: Docker Swarm Mode
+
+### `73` Docker Swarm Mode Init
+
+1.  Init swarm
+    -  `docker swarm init`
+    -  `docker info`
+        -  Swarm: active
+        -  NodeID: 7j6yonvvr21o6uzpp5ekcayyd
+        -  Is Manager: true
+        -  ClusterID: rpps04vpnzrcz7dtodhyupc88
+        -  Managers: 2
+        -  Nodes: 2
+        -  A lot more info
+    -  `docker node ls`
+2.  Run `portainer` as service  
+    -  View [portainer.io](https://www.portainer.io/solutions/docker)
+    - [Deploy Portainer in Docker Swarm](https://documentation.portainer.io/v2.0/deploy/linux/)
+        -  I have swarm cluster with 2 nodes (art and farm01)
+        -  `curl -L https://downloads.portainer.io/portainer-agent-stack.yml -o portainer-agent-stack.yml`
+        -  this will download `portainer-agent-stack.yml`
+        -  `docker stack deploy -c portainer-agent-stack.yml portainer`
+        -  will deploy agent on every node and 1 server
+    -  `docker service ls`
+        -  ID             NAME                  MODE         REPLICAS   IMAGE                           PORTS
+        -  tsg1ew0wafks   portainer_agent       global       2/2        portainer/agent:latest
+        -  8a8kyvnxteqr   portainer_portainer   replicated   1/1        portainer/portainer-ce:latest   *:8000->8000/tcp, *:9000->9000/tcp 
+3.  Set up `portainer`
+    -  browse to `http://art:9000`
+    -  set password
+4.  I can not see all the features that SFG shows
+5.  Clean UP
+    -  `docker stack rm portainer`    
+
+
+
+
+
 
                      
