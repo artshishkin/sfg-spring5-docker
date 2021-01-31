@@ -302,6 +302,33 @@ portainer/portainer \
     -  Web editor -> Insert `wordpress/docker-compose.yml` content
     -  Deploy the stack
 
+### `75` Provision Servers for Docker Swarm
+
+1.  One opportunity [play-with-docker](https://labs.play-with-docker.com/)
+2.  Digital Ocean
+    -  Create Droplets -> Distributions -> CentOS
+    -  Authentication
+        -  Password
+        -  SSH keys -> New SSH Key
+            -  `ssh-keygen`
+            -  Enter file in which to save the key (C:\Users\Admin/.ssh/id_rsa): C:\Users\Admin\.ssh\digital_ocean_centos
+            -  Enter passphrase (empty for no passphrase): {MY_PASSWORD}DIGITAL
+                -  Your public key has been saved in C:\Users\Admin\.ssh\digital_ocean_centos.pub.
+                -  The key fingerprint is:
+                -  SHA256:YtdUkKvGVdDGD/pZHHkrn3kJvTzjPD0zS0Xt65YYWno admin@ArtRed16                
+        -  `cat .\.ssh\digital_ocean_centos.pub` -> paste it into `SSH key Content` window
+    -  One droplet for now (SFG made 4)
+    -  Create
+3.  SSH to it
+    -  `ssh -i /path/to/private/key username@203.0.113.0`
+    -  `ssh -i ~\.ssh\digital_ocean_centos root@46.101.131.133`
+    -  Enter passphrase for key 'C:\Users\Admin/\.ssh\digital_ocean_centos': {enter passphrase} -> OK
+    -  `whoami` -> root           
+            
+    
+
+
+   
 
 
                      
