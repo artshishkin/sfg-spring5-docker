@@ -722,6 +722,9 @@ docker service create --name webapp -p 8080:8080 -d \
     -  mysqldb: backend
 3.  Hide unnecessary ports 
 
+###  `88` Docker Swarm Stacks
 
+-  `docker stack deploy -c docker-compose.yml art-app`
+-  `docker stsack rm art-app`
 
 
