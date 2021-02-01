@@ -123,3 +123,37 @@ artarkatesoft/pageviewservice
 docker service create --name webapp -p 8080:8080 -d \
   --network art-service-network \
   -e SPRING_RABBITMQ_HOST=myrabbitmq artarkatesoft/springbootdocker
+
+
+# Create services in Docker Swarm manually (BEST PRACTICE)
+
+# Create backend and frontend networks
+docker network create --driver overlay art-service-backend-network
+docker network create --driver overlay art-service-frontend-network
+
+# MySQL Service
+docker service create \
+--name mysqldb \
+--network art-service-backend-network \
+-e MYSQL_DATABASE=pageviewservice \
+-e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+mysql:5.7
+
+## RabbitMQ Service
+docker service create --name myrabbitmq \
+  --network art-service-backend-network \
+  --network art-service-frontend-network \
+  -d rabbitmq
+
+## Page View Service
+docker service create  --name pageviewservice  -d \
+--network art-service-backend-network \
+-e SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/pageviewservice?useSSL=false \
+-e SPRING_PROFILES_ACTIVE=mysql  \
+-e SPRING_RABBITMQ_HOST=myrabbitmq \
+artarkatesoft/pageviewservice
+
+## Web App Service
+docker service create --name webapp -p 8080:8080 -d \
+  --network art-service-frontend-network \
+  -e SPRING_RABBITMQ_HOST=myrabbitmq artarkatesoft/springbootdocker

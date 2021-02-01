@@ -709,3 +709,19 @@ docker service create --name webapp -p 8080:8080 -d \
     -  3e397442a1fa   my_app_net              bridge    local
     -  f1ef2f70c963   network_elasticsearch   bridge    local
     -  f225feb00d43   none                    null      local
+
+### `87` Docker Overlay Networks (BEST PRACTICE)
+
+1.  Best practice is to split networks into a backend and a frontend
+    -  `docker network create --driver overlay art-service-backend-network`
+    -  `docker network create --driver overlay art-service-frontend-network`
+2.  Use commands from [dockercommands.sh](src/main/scripts/dockercommands.sh)
+    -  webapp: frontend
+    -  myrabbitmq: frontend and backend
+    -  pageviewservice: backend
+    -  mysqldb: backend
+3.  Hide unnecessary ports 
+
+
+
+
