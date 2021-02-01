@@ -570,4 +570,21 @@ mysql:5.7
     -  Using MySQL Workbench create 2 connections to any IP of cluster, port 3306 and 3307
     -  OK
 
+###  Replacing SFG image with `artarkatesoft` 
+
+1.  Change docker.image prefix from `springframeworkguru/pageviewservice` to `artarkatesoft/pageviewservice`
+2.  Build image
+    -  `mvn clean package docker:build`
+3.  Push to Dockerhub    
+    -  `mvn docker:push` -> were problems with authentication (work around with docker itself)
+    -  `docker image push artarkatesoft/pageviewservice` - OK 
+4.  Test image is working
+    -  modify [scripts\testing-environment\docker-compose.yml](https://github.com/artshishkin/sfg-spring5-docker/blob/master/src/main/scripts/testing-environment/docker-compose.yml)
+    -  change `pageviewservice` to use image `artarkatesoft/pageviewservice`
+    -  `docker-compose up -d`
+    -  run `SfgDockerCourseApplication`
+    -  curl localhost:8080 -> PageViewEvent sent -> Received Persisted
+5.  Modify and test total `art-app` docker compose file
+
+
     

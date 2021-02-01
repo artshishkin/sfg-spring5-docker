@@ -18,7 +18,7 @@ services:
       - "5671:5671"
       - "5672:5672"
   pageviewservice:
-    image: springframeworkguru/pageviewservice
+    image: artarkatesoft/pageviewservice
     ports:
       - "8081:8081"
 #    restart: always
