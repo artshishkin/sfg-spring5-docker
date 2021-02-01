@@ -475,4 +475,70 @@ All ports are BLOCKED except 22 (SSH), 2375 (Docker) and 2376 (Docker).
         -  node8      Ready     Active                          20.10.2
         -  node9      Ready     Active                          20.10.2
     -  `docker service ls` - portainer OK
-    -  `docker node promote node8 node9`  
+    -  `docker node promote node8 node9`
+
+###  Enabling ports for a Multi Node Docker Swarm Cluster using Docker Droplet image
+    
+1.  [Set UP Firewall UFW in Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-18-04-ru)
+2.  Create Docker Droplet for tuning
+    -  create 2 instances
+3.  SSH into them
+    -  `ufw status`
+        -  Status: active
+        -  To                         Action      From
+        -  --                         ------      ----
+        -  22/tcp                     LIMIT       Anywhere
+        -  2375/tcp                   ALLOW       Anywhere
+        -  2376/tcp                   ALLOW       Anywhere
+        -  22/tcp (v6)                LIMIT       Anywhere (v6)
+        -  2375/tcp (v6)              ALLOW       Anywhere (v6)
+        -  2376/tcp (v6)              ALLOW       Anywhere (v6)
+4.  Required open ports  
+    -  TCP port 2377 for cluster management communications
+    -  TCP and UDP port 7946 for communication among nodes
+    -  UDP port 4789 for overlay network traffic
+    -  If you plan on creating an overlay network with encryption (--opt encrypted), you also need to ensure ip protocol 50 (ESP)        
+5.  [Configure the Linux Firewall for Docker Swarm on Ubuntu](https://www.digitalocean.com/community/tutorials/how-to-configure-the-linux-firewall-for-docker-swarm-on-ubuntu-16-04)
+    -  ufw allow 22/tcp
+    -  ufw allow 2376/tcp
+    -  ufw allow 2377/tcp
+    -  ufw allow 7946/tcp
+    -  ufw allow 7946/udp
+    -  ufw allow 4789/udp    
+6.  My config 1 
+    -  ufw allow 22/tcp (not necessary, already configured in Docker Droplet image)
+    -  ufw allow in on eth1 to any port 2376/tcp (not necessary, already configured in Docker Droplet image)
+    -  ~~ufw allow in on eth1 to any port 2377/tcp~~  (ERROR: Bad port '4789/udp')
+        -  ufw allow in on eth1 to any port 2377
+    -  ufw allow in on eth1 to any port 7946
+    -  ~~ufw allow in on eth1 to any port 4789/udp~~ (ERROR: Bad port '4789/udp')
+        -  ufw allow in on eth1 to any port 4789
+    -  `ufw status numbered`
+    -  delete unnecessary rules
+        -  `ufw delete 8`
+7.  My config 2
+    -  ufw allow in on eth1 to any port 2377 proto tcp     
+    -  ufw allow in on eth1 to any port 7946
+    -  ufw allow in on eth1 to any port 4789 proto udp
+8.  Testing
+    -  ssh to both nodes
+    -  node1 -> `docker swarm init --advertise-addr eth1:2377`
+    -  node2 -> `docker swarm join --token SWMTKN-1-0vxocicdheh3smn1seebhjtd2hpdivbs9r1p39wcdhr6pgyb08-0n0by6c2ne8w6sydfqvwyk2mm 10.114.16.2:2377`    
+    -  node1 -> `docker node ls` -> 1 manager, 1 worker -> OK
+    -  Cleanup -> Destroy 2 droplets
+9. Final algorithm
+    -  Start node1
+        -  Use UserData from [UserDataDockerDroplet\UserDataNode1.sh](https://github.com/artshishkin/sfg-spring5-docker/blob/master/src/main/scripts/UserDataDockerDroplet/UserDataNode1.sh)
+        -  SSH to it
+            -  `ssh -i ~\.ssh\digital_ocean root@167.71.62.227`
+        -  get join-token
+            -  `docker swarm join-token worker` -> save it
+    -  Start other nodes
+        -  insert join-token to UserData
+        -  Use UserData from [UserDataDockerDroplet\UserDataNode2345.sh](https://github.com/artshishkin/sfg-spring5-docker/blob/master/src/main/scripts/UserDataDockerDroplet/UserDataNode2345.sh)
+    -  Browse to  `node1:9000` -> portainer                               
+
+
+
+
+    
