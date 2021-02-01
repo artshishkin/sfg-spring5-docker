@@ -635,7 +635,77 @@ webapp.1.eg6pkq73lln5@docker-desktop    | java.net.UnknownHostException: myrabbi
     -  f225feb00d43   none                    null      local    
 -  cleanup
     -  `docker service rm mysqldb pageviewservice myrabbitmq webapp`
-    
+        
+### `87` Docker Overlay Networks (RIGHT)
 
+-  Create network first
+    -  `docker network create --driver overlay art-service-network`
+-  Create services with this network
+```shell script
 
+# Create network first
+docker network create --driver overlay art-service-network
+
+# MySQL Service
+docker service create \
+--name mysqldb -p 3307:3306 \
+--network art-service-network \
+-e MYSQL_DATABASE=pageviewservice \
+-e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+mysql:5.7
+
+## RabbitMQ Service
+docker service create --name myrabbitmq --network art-service-network -p 5671:5671 -p 5672:5672 -d rabbitmq
+
+## Page View Service
+docker service create  --name pageviewservice -p 8081:8081 -d \
+--network art-service-network \
+-e SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/pageviewservice?useSSL=false \
+-e SPRING_PROFILES_ACTIVE=mysql  \
+-e SPRING_RABBITMQ_HOST=myrabbitmq \
+artarkatesoft/pageviewservice
+
+## Web App Service
+docker service create --name webapp -p 8080:8080 -d \
+  --network art-service-network \
+  -e SPRING_RABBITMQ_HOST=myrabbitmq artarkatesoft/springbootdocker
+```
+-  Test it 
+    -  curl localhost:8080 -> event sent, received and persisted -> OK
+-  `docker service inspect webapp`
+    -  log is [swarm-logs/webapp-correct.json](src/main/scripts/swarm-logs/webapp-correct.json)
+-  `docker service inspect myrabbitmq`
+    -  log is [swarm-logs/myrabbitmq-correct.json](src/main/scripts/swarm-logs/myrabbitmq-correct.json)
+    -  difference is another Network is present
+-  "Networks": 
+```json
+[
+  {
+    "Target": "t63mgujigmbb0ng5bg1kwzrjo"
+  }
+]
+```
+-  "VirtualIPs":
     
+```json
+[
+  {
+    "NetworkID": "7gvxxa0y157a8vbhagtzh3c7z",
+    "Addr": "10.0.0.79/24"
+  },
+  {
+    "NetworkID": "t63mgujigmbb0ng5bg1kwzrjo",
+    "Addr": "10.0.1.5/24"
+  }
+]
+```        
+-  `docker network ls`
+    -  NETWORK ID     NAME                    DRIVER    SCOPE
+    -  **t63mgujigmbb   art-service-network     overlay   swarm**
+    -  48bf18ff19cd   bridge                  bridge    local
+    -  41172f0647f2   docker_gwbridge         bridge    local
+    -  3110841fafc8   host                    host      local
+    -  **7gvxxa0y157a   ingress                 overlay   swarm**
+    -  3e397442a1fa   my_app_net              bridge    local
+    -  f1ef2f70c963   network_elasticsearch   bridge    local
+    -  f225feb00d43   none                    null      local

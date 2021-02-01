@@ -69,12 +69,14 @@ portainer/portainer \
 ## force new quorum
 docker swarm init --force-new-cluster --advertise-addr node3:2377
 
+# Create services in Docker Swarm manually (WRONG approach)
+
 # MySQL Service
 docker service create \
 --name mysqldb -p 3307:3306 \
 -e MYSQL_DATABASE=pageviewservice \
 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
-mysql
+mysql:5.7
 
 # List Processes in service
 docker service ps mysqldb
@@ -91,4 +93,33 @@ artarkatesoft/pageviewservice
 
 ## Web App Service
 docker service create --name webapp -p 8080:8080 -d \
+  -e SPRING_RABBITMQ_HOST=myrabbitmq artarkatesoft/springbootdocker
+
+# Create services in Docker Swarm manually (Correct approach)
+
+# Create network first
+docker network create --driver overlay art-service-network
+
+# MySQL Service
+docker service create \
+--name mysqldb -p 3307:3306 \
+--network art-service-network \
+-e MYSQL_DATABASE=pageviewservice \
+-e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+mysql:5.7
+
+## RabbitMQ Service
+docker service create --name myrabbitmq --network art-service-network -p 5671:5671 -p 5672:5672 -d rabbitmq
+
+## Page View Service
+docker service create  --name pageviewservice -p 8081:8081 -d \
+--network art-service-network \
+-e SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/pageviewservice?useSSL=false \
+-e SPRING_PROFILES_ACTIVE=mysql  \
+-e SPRING_RABBITMQ_HOST=myrabbitmq \
+artarkatesoft/pageviewservice
+
+## Web App Service
+docker service create --name webapp -p 8080:8080 -d \
+  --network art-service-network \
   -e SPRING_RABBITMQ_HOST=myrabbitmq artarkatesoft/springbootdocker
