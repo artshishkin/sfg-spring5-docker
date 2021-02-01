@@ -538,7 +538,36 @@ All ports are BLOCKED except 22 (SSH), 2375 (Docker) and 2376 (Docker).
         -  Use UserData from [UserDataDockerDroplet\UserDataNode2345.sh](https://github.com/artshishkin/sfg-spring5-docker/blob/master/src/main/scripts/UserDataDockerDroplet/UserDataNode2345.sh)
     -  Browse to  `node1:9000` -> portainer                               
 
+##  Section 9: Running Java Apps in Docker Swarm
 
+### `86` Deploy MySQL as Service in Docker Swarm
 
+-  Start Cluster on CentOS
+-  Start service `mysql:5.7` by using commands 
+```shell script
+docker service create \
+--name mysqldb -p 3306:3306 \
+-e MYSQL_DATABASE=pageviewservice \
+-e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+mysql:5.7
+```
+-  Test it runs
+    -  `docker service ps mysqldb`
+-  **OR**
+-  Start service `mysql:5.7` by using portainer
+    -  Portainer Console -> Endpoints -> Primary -> Services
+    -  Add service
+        -  Name: `mysqldbc`
+        -  Registry: Docker.io
+        -  Image: mysql:5.7
+        -  Replicas: 1
+        -  Port mapping: 3307:3306 (for solving conflicts)
+        -  Environment variables:
+            -  MYSQL_DATABASE: pageviewservice
+            -  MYSQL_ALLOW_EMPTY_PASSWORD: yes            
+        -  Create the service
+-  Test connection
+    -  Using MySQL Workbench create 2 connections to any IP of cluster, port 3306 and 3307
+    -  OK
 
     

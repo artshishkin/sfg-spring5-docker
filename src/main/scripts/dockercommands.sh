@@ -31,3 +31,50 @@ mvn docker:logs -Ddocker.follow -Ddocker.filter=spring-boot-docker
 ## Logs from several containers
 mvn docker:logs -Ddocker.follow -Ddocker.filter=spring-boot-docker,myrabbitmq
 mvn docker:logs -Ddocker.follow -Ddocker.filter=spring-boot-docker,springframeworkguru/pageviewservice
+
+# Docker Compose Commands
+
+#start docker compose in background
+docker-compose up -d
+
+#stop docker-compose
+docker-compose down
+
+# Docker Swarm Commands
+
+## Create portainer service in docker swarm
+docker service create \
+--name portainer \
+--publish 9000:9000 \
+--constraint 'node.role == manager' \
+--mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+portainer/portainer \
+-H unix:///var/run/docker.sock
+
+## ssh to node on DigitalOcean
+ssh -i "~/.ssh/<your key here>"  root@<your node ip here>
+
+#Init Docker Swarm
+docker swarm init
+
+## Create portainer service in docker swarm on port 80
+docker service create \
+--name portainer \
+--publish 80:9000 \
+--constraint 'node.role == manager' \
+--mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+portainer/portainer \
+-H unix:///var/run/docker.sock
+
+## force new quarum
+docker swarm init --force-new-cluster --advertise-addr node3:2377
+
+# MySQL Service
+docker service create \
+--name mysqldb -p 3306:3306 \
+-e MYSQL_DATABASE=pageviewservice \
+-e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+mysql
+
+# List Processes in service
+docker service ps mysqldb
