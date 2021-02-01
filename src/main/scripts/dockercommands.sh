@@ -16,7 +16,7 @@ docker run --name pageviewservice -p 8081:8081 -d \
 -e SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/pageviewservice \
 -e SPRING_PROFILES_ACTIVE=mysql  \
 -e SPRING_RABBITMQ_HOST=rabbitmq \
-springframeworkguru/pageviewservice
+artarkatesoft/pageviewservice
 
 # Using Maven for CI Builds
 mvn clean verify docker:push
@@ -66,15 +66,29 @@ docker service create \
 portainer/portainer \
 -H unix:///var/run/docker.sock
 
-## force new quarum
+## force new quorum
 docker swarm init --force-new-cluster --advertise-addr node3:2377
 
 # MySQL Service
 docker service create \
---name mysqldb -p 3306:3306 \
+--name mysqldb -p 3307:3306 \
 -e MYSQL_DATABASE=pageviewservice \
 -e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
 mysql
 
 # List Processes in service
 docker service ps mysqldb
+
+## RabbitMQ Service
+docker service create --name myrabbitmq -p 5671:5671 -p 5672:5672 -d rabbitmq
+
+## Page View Service
+docker service create  --name pageviewservice -p 8081:8081 -d \
+-e SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/pageviewservice \
+-e SPRING_PROFILES_ACTIVE=mysql  \
+-e SPRING_RABBITMQ_HOST=myrabbitmq \
+artarkatesoft/pageviewservice
+
+## Web App Service
+docker service create --name webapp -p 8080:8080 -d \
+  -e SPRING_RABBITMQ_HOST=myrabbitmq artarkatesoft/springbootdocker

@@ -1,0 +1,102 @@
+[
+  {
+    "ID": "2e4boo3an8ds4wec775g681ve",
+    "Version": {
+      "Index": 456
+    },
+    "CreatedAt": "2021-02-01T14:25:41.9435505Z",
+    "UpdatedAt": "2021-02-01T14:25:41.9509348Z",
+    "Spec": {
+      "Name": "webapp",
+      "Labels": {},
+      "TaskTemplate": {
+        "ContainerSpec": {
+          "Image": "artarkatesoft/springbootdocker:latest@sha256:467d804db51f2a749b4904d8fc8aca97532d9cb42f27798f08b401c30f6137ec",
+          "Env": [
+            "SPRING_RABBITMQ_HOST=myrabbitmq"
+          ],
+          "Init": false,
+          "StopGracePeriod": 10000000000,
+          "DNSConfig": {},
+          "Isolation": "default"
+        },
+        "Resources": {
+          "Limits": {},
+          "Reservations": {}
+        },
+        "RestartPolicy": {
+          "Condition": "any",
+          "Delay": 5000000000,
+          "MaxAttempts": 0
+        },
+        "Placement": {
+          "Platforms": [
+            {
+              "Architecture": "amd64",
+              "OS": "linux"
+            }
+          ]
+        },
+        "ForceUpdate": 0,
+        "Runtime": "container"
+      },
+      "Mode": {
+        "Replicated": {
+          "Replicas": 1
+        }
+      },
+      "UpdateConfig": {
+        "Parallelism": 1,
+        "FailureAction": "pause",
+        "Monitor": 5000000000,
+        "MaxFailureRatio": 0,
+        "Order": "stop-first"
+      },
+      "RollbackConfig": {
+        "Parallelism": 1,
+        "FailureAction": "pause",
+        "Monitor": 5000000000,
+        "MaxFailureRatio": 0,
+        "Order": "stop-first"
+      },
+      "EndpointSpec": {
+        "Mode": "vip",
+        "Ports": [
+          {
+            "Protocol": "tcp",
+            "TargetPort": 8080,
+            "PublishedPort": 8080,
+            "PublishMode": "ingress"
+          }
+        ]
+      }
+    },
+    "Endpoint": {
+      "Spec": {
+        "Mode": "vip",
+        "Ports": [
+          {
+            "Protocol": "tcp",
+            "TargetPort": 8080,
+            "PublishedPort": 8080,
+            "PublishMode": "ingress"
+          }
+        ]
+      },
+      "Ports": [
+        {
+          "Protocol": "tcp",
+          "TargetPort": 8080,
+          "PublishedPort": 8080,
+          "PublishMode": "ingress"
+        }
+      ],
+      "VirtualIPs": [
+        {
+          "NetworkID": "7gvxxa0y157a8vbhagtzh3c7z",
+          "Addr": "10.0.0.64/24"
+        }
+      ]
+    }
+  }
+]

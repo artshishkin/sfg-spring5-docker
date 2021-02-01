@@ -1,0 +1,136 @@
+[
+  {
+    "ID": "cjxr96hdgnc2oon1cspf8z8fj",
+    "Version": {
+      "Index": 441
+    },
+    "CreatedAt": "2021-02-01T14:25:18.0429213Z",
+    "UpdatedAt": "2021-02-01T14:25:18.053526Z",
+    "Spec": {
+      "Name": "myrabbitmq",
+      "Labels": {},
+      "TaskTemplate": {
+        "ContainerSpec": {
+          "Image": "rabbitmq:latest@sha256:405153f6bda1081835325203ce2a8832824448a1a9416a250e337612065a320a",
+          "Init": false,
+          "StopGracePeriod": 10000000000,
+          "DNSConfig": {},
+          "Isolation": "default"
+        },
+        "Resources": {
+          "Limits": {},
+          "Reservations": {}
+        },
+        "RestartPolicy": {
+          "Condition": "any",
+          "Delay": 5000000000,
+          "MaxAttempts": 0
+        },
+        "Placement": {
+          "Platforms": [
+            {
+              "Architecture": "amd64",
+              "OS": "linux"
+            },
+            {
+              "OS": "linux"
+            },
+            {
+              "Architecture": "arm64",
+              "OS": "linux"
+            },
+            {
+              "Architecture": "386",
+              "OS": "linux"
+            },
+            {
+              "Architecture": "ppc64le",
+              "OS": "linux"
+            },
+            {
+              "Architecture": "s390x",
+              "OS": "linux"
+            }
+          ]
+        },
+        "ForceUpdate": 0,
+        "Runtime": "container"
+      },
+      "Mode": {
+        "Replicated": {
+          "Replicas": 1
+        }
+      },
+      "UpdateConfig": {
+        "Parallelism": 1,
+        "FailureAction": "pause",
+        "Monitor": 5000000000,
+        "MaxFailureRatio": 0,
+        "Order": "stop-first"
+      },
+      "RollbackConfig": {
+        "Parallelism": 1,
+        "FailureAction": "pause",
+        "Monitor": 5000000000,
+        "MaxFailureRatio": 0,
+        "Order": "stop-first"
+      },
+      "EndpointSpec": {
+        "Mode": "vip",
+        "Ports": [
+          {
+            "Protocol": "tcp",
+            "TargetPort": 5671,
+            "PublishedPort": 5671,
+            "PublishMode": "ingress"
+          },
+          {
+            "Protocol": "tcp",
+            "TargetPort": 5672,
+            "PublishedPort": 5672,
+            "PublishMode": "ingress"
+          }
+        ]
+      }
+    },
+    "Endpoint": {
+      "Spec": {
+        "Mode": "vip",
+        "Ports": [
+          {
+            "Protocol": "tcp",
+            "TargetPort": 5671,
+            "PublishedPort": 5671,
+            "PublishMode": "ingress"
+          },
+          {
+            "Protocol": "tcp",
+            "TargetPort": 5672,
+            "PublishedPort": 5672,
+            "PublishMode": "ingress"
+          }
+        ]
+      },
+      "Ports": [
+        {
+          "Protocol": "tcp",
+          "TargetPort": 5671,
+          "PublishedPort": 5671,
+          "PublishMode": "ingress"
+        },
+        {
+          "Protocol": "tcp",
+          "TargetPort": 5672,
+          "PublishedPort": 5672,
+          "PublishMode": "ingress"
+        }
+      ],
+      "VirtualIPs": [
+        {
+          "NetworkID": "7gvxxa0y157a8vbhagtzh3c7z",
+          "Addr": "10.0.0.60/24"
+        }
+      ]
+    }
+  }
+]

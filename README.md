@@ -586,5 +586,56 @@ mysql:5.7
     -  curl localhost:8080 -> PageViewEvent sent -> Received Persisted
 5.  Modify and test total `art-app` docker compose file
 
+###  `87` Docker Overlay Networks (WRONG service creation)
+
+-  MySQL Service
+```shell script
+docker service create \
+--name mysqldb -p 3306:3306 \
+-e MYSQL_DATABASE=pageviewservice \
+-e MYSQL_ALLOW_EMPTY_PASSWORD=yes \
+mysql
+```
+-  RabbitMQ Service
+```shell script
+docker service create --name myrabbitmq -p 5671:5671 -p 5672:5672 -d rabbitmq
+```
+- Page View Service
+```shell script
+docker service create  --name pageviewservice -p 8081:8081 -d \
+-e SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/pageviewservice \
+-e SPRING_PROFILES_ACTIVE=mysql  \
+-e SPRING_RABBITMQ_HOST=myrabbitmq \
+artarkatesoft/pageviewservice
+```
+- Web App Service
+```shell script
+docker service create --name webapp -p 8080:8080 -d \
+  -e SPRING_RABBITMQ_HOST=myrabbitmq artarkatesoft/springbootdocker
+```
+-  curl localhost:8080 -> Got an Error
+```
+2021-02-01 14:27:14.382  INFO 1 --- [nio-8080-exec-1] o.s.a.r.c.CachingConnectionFactory       : Attempting to connect to: [myrabbitmq:5672]
+webapp.1.eg6pkq73lln5@docker-desktop    | 2021-02-01 14:27:24.409 ERROR 1 --- [nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is org.springframework.amqp.AmqpIOException: java.net.UnknownHostException: myrabbitmq: Name or service not known] with root cause
+webapp.1.eg6pkq73lln5@docker-desktop    |
+webapp.1.eg6pkq73lln5@docker-desktop    | java.net.UnknownHostException: myrabbitmq: Name or service not known
+```
+-  `docker service inspect webapp`
+    -  log is [swarm-logs/webapp-wrong.json](src/main/scripts/swarm-logs/webapp-wrong.json)
+-  `docker service inspect myrabbitmq`
+    -  log is [swarm-logs/myrabbitmq-wrong.json](src/main/scripts/swarm-logs/myrabbitmq-wrong.json)
+-  `docker network ls`
+    -  NETWORK ID     NAME                    DRIVER    SCOPE
+    -  48bf18ff19cd   bridge                  bridge    local
+    -  41172f0647f2   docker_gwbridge         bridge    local
+    -  3110841fafc8   host                    host      local
+    -  **7gvxxa0y157a   ingress                 overlay   swarm**
+    -  3e397442a1fa   my_app_net              bridge    local
+    -  f1ef2f70c963   network_elasticsearch   bridge    local
+    -  f225feb00d43   none                    null      local    
+-  cleanup
+    -  `docker service rm mysqldb pageviewservice myrabbitmq webapp`
+    
+
 
     
