@@ -798,7 +798,18 @@ docker service create --name webapp -p 8080:8080 -d \
         1.  create external secret from console
         2.  terminate manager station
         3.  deploy stack using external secret
-           
+4.  Approach FOUR - using portainer
+    -  Portainer console -> Secrets
+    -  Add secret
+        -  Name: `mysql-root-password`
+        -  Secret: `password`
+        -  Create the secret
+    -  Deploy stack
+    -  use same [docker-compose file](src/main/scripts/art-app-swarm-stack-secret/docker-compose.yml) as for Approach 2   
+    -  made same steps as for Approach 2 but in cloud (or [play-with-docker](https://labs.play-with-docker.com/))
+    -  approach 4
+        -  create secret using portainer
+        -  deploy stack          
     
 
 
