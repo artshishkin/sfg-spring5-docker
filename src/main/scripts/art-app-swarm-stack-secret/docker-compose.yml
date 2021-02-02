@@ -31,9 +31,11 @@ services:
   pageviewservice:
     image: artarkatesoft/pageviewservice
 #    restart: always
+    secrets:
+      - application.properties
     environment:
       SPRING_DATASOURCE_URL: 'jdbc:mysql://mysqldb:3306/pageviewservice?useSSL=false'
-      SPRING_DATASOURCE_PASSWORD: 'password'
+      SPRING_CONFIG_ADDITIONAL_LOCATION: 'file:/run/secrets/'
       SPRING_PROFILES_ACTIVE: 'mysql'
       SPRING_RABBITMQ_HOST: myrabbitmq
     networks:
@@ -76,5 +78,7 @@ networks:
 secrets:
   mysql-root-password:
     external: true
+  application.properties:
+    file: ./application.properties
 
 

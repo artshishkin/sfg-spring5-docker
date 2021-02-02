@@ -810,7 +810,18 @@ docker service create --name webapp -p 8080:8080 -d \
     -  approach 4
         -  create secret using portainer
         -  deploy stack          
+
+###  Spring Boot Secrets in Docker Swarm
+
+1.  Using `spring.config.location` environment variable and file `application.properties`
+    -  was errors -> default application.properties did not peak up
+2.  Using `spring.config.additional-location` environment variable and file `application.properties` 
+    -  create `application.properties` with secrets
+        -  `spring.datasource.password=password`
+        -  use environment variable
+        -  `SPRING_CONFIG_ADDITIONAL_LOCATION: 'file:/run/secrets/'`       
     
+       
 
 
 
