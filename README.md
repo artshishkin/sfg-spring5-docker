@@ -820,7 +820,12 @@ docker service create --name webapp -p 8080:8080 -d \
         -  `spring.datasource.password=password`
         -  use environment variable
         -  `SPRING_CONFIG_ADDITIONAL_LOCATION: 'file:/run/secrets/'`       
-    
+3.  Using `spring.config.additional-location` environment variable and external secret
+    -  create external secret 
+        1.  by file -> `docker secret create application.properties application.properties`    
+        2.  by console -> `echo "spring.datasource.password=password" | docker secret create application.properties -`
+        3.  using portainer
+    -  deploy stack    
        
 
 
