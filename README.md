@@ -769,12 +769,37 @@ docker service create --name webapp -p 8080:8080 -d \
         -  **when using EXTERNAL secret it is not being deleted during stack removal**
     -  remove secret
         -  `docker secret remove mysql-root-password`
-    -  approach
+    -  approach 2
         1.  create external secret from file
         2.  delete file
         3.  deploy stack using external secret
+3.  Approach THREE - using external (from console)
+    -  create external secret
+        -  `echo "password" | docker secret create mysql-root-password -`
+    -  use same [docker-compose file](src/main/scripts/art-app-swarm-stack-secret/docker-compose.yml) as for Approach 2   
+    -  made same steps as for Approach 2 but in cloud (or [play-with-docker](https://labs.play-with-docker.com/))
+    -  disadvantage
+        -  `history` ->
+            -  1  echo "password" | docker secret create mysql-root-password -
+            -  2  docker service create --name portainer --publish 9000:9000 --constraint 'node.role == manager' --mount type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock portainer/portainer -H unix:///var/run/docker.sock
+            -  3  history            
+        -  we can view history and find password
+    -  after creating a password in cloud we can delete manager station 
+        -  delete in play-with-docker.com        
+        -  destroy in DigitalOcean
+        -  terminate instance (EC2 on AWS)
+    -  remove manager from swarm
+        -  `docker node promote worker1` - first promote ex-worker
+        -  start new worker (new Server for example) and join to swarm
+            -  `docker swarm join --token SWMTKN-1-3o0gxtrivl0s4ag6ncynky87p9mjzskhpsaouzd1eb0nbrt03c-f13fthuyrlnsy5h26lncln8t7 192.168.0.19:2377`
+        -  `docker node demote  manager1` - demote manager to worker
+        -  `docker node rm  manager1` - remove manager
+    -  approach 3
+        1.  create external secret from console
+        2.  terminate manager station
+        3.  deploy stack using external secret
+           
     
-
 
 
 
