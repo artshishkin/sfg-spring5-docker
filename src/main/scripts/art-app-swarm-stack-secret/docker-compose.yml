@@ -1,0 +1,80 @@
+version: '3.1'
+
+services:
+
+  mysqldb:
+    image: mysql:5.7
+    secrets:
+      - mysql-root-password
+    environment:
+      MYSQL_DATABASE: pageviewservice
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql-root-password
+    networks:
+      - art-service-backend-network
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 20s
+      retries: 10
+
+  myrabbitmq:
+    image: rabbitmq
+    networks:
+      - art-service-frontend-network
+      - art-service-backend-network
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  pageviewservice:
+    image: artarkatesoft/pageviewservice
+#    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:mysql://mysqldb:3306/pageviewservice?useSSL=false'
+      SPRING_DATASOURCE_PASSWORD: 'password'
+      SPRING_PROFILES_ACTIVE: 'mysql'
+      SPRING_RABBITMQ_HOST: myrabbitmq
+    networks:
+      - art-service-backend-network
+    deploy:
+      replicas: 3
+    depends_on:
+      - mysqldb
+      - myrabbitmq
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  webapp:
+    image: artarkatesoft/springbootdocker
+    ports:
+      - '8080:8080'
+    networks:
+      - art-service-frontend-network
+    deploy:
+      replicas: 3
+    environment:
+      SPRING_RABBITMQ_HOST: myrabbitmq
+    depends_on:
+      - myrabbitmq
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  art-service-backend-network:
+    driver: overlay
+  art-service-frontend-network:
+    driver: overlay
+
+secrets:
+  mysql-root-password:
+    file: mysql_root_password.txt
+
+

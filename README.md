@@ -727,4 +727,29 @@ docker service create --name webapp -p 8080:8080 -d \
 -  `docker stack deploy -c docker-compose.yml art-app`
 -  `docker stsack rm art-app`
 
+###  `90` Implementing Docker Secrets
 
+1.  Approach ONE - using file
+    -  use file  [mysql_root_password.txt](src/main/scripts/art-app-swarm-stack-secret/mysql_root_password.txt) with mysql root password
+    -  modify [docker-compose file](src/main/scripts/art-app-swarm-stack-secret/docker-compose.yml)
+        1.  add secret `mysql-root-password` to the stack -> this tell Docker to read secret from file `mysql_root_password.txt` into secret storage
+            -  root `secrets:` section in the bottom of the file
+        2.  point that service `mysqld` uses it -> this tells Docker to copy secret file `mysql-root-password` into `/run/secrets/` directory inside container
+            -  section `secrets:` under service `mysqld` section
+        3.  tell container how to set up password for MYSQL
+            -  `MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql-root-password`
+    -  adjust service `pageviewservice` to use plain text password (just for study to make everuthing work)
+        -  `SPRING_DATASOURCE_PASSWORD: 'password'`
+    -  deploy stack
+        -  `docker stack deploy -c docker-compose.yml art-app`
+        -  all OK
+    -  bash into mysql docker container
+        -  `docker container exec -it 49e27cbf549b bash`
+        -  `cat /run/secrets/mysql-root-password`
+            -  `password` - same as in `mysql_root_password.txt`
+    -  remove stack
+        -  `docker stack rm art-app`
+            -  `...Removing secret art-app_mysql-root-password...`
+            -  **secrets are being removed too**
+            -  `docker secret ls` -> None        
+          
