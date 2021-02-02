@@ -753,3 +753,40 @@ docker service create --name webapp -p 8080:8080 -d \
             -  **secrets are being removed too**
             -  `docker secret ls` -> None        
           
+2.  Approach TWO - using external (but from file)
+    -  create external secret
+        -  `docker secret create mysql-root-password mysql_root_password.txt`
+    -  modify [docker-compose file](src/main/scripts/art-app-swarm-stack-secret/docker-compose.yml)
+        -  tell Docker to use external secret for this stack -> `external: true`
+    -  deploy stack
+    -  view password in container
+        -  `docker exec -it d48440dbb0b0  cat /run/secrets/mysql-root-password` -> `password` -> OK
+    -  remove stack
+        -  `docker stack rm art-app`
+        -  `docker secret ls`
+            ID                          NAME                  DRIVER    CREATED       UPDATED
+            y8hfpbu8q892dsp5c6m7s9tey   mysql-root-password             5 hours ago   5 hours ago
+        -  **when using EXTERNAL secret it is not being deleted during stack removal**
+    -  remove secret
+        -  `docker secret remove mysql-root-password`
+    -  approach
+        1.  create external secret from file
+        2.  delete file
+        3.  deploy stack using external secret
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
